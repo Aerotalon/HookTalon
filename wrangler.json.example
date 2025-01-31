@@ -1,0 +1,55 @@
+ /**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+ {
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "HookTalon",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-01-29",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  "send_metrics": false,
+  "minify": true,
+  "placement": { "mode": "smart" },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "hooktalon",
+      "database_id": ""
+    }
+  ],
+  "queues": {
+    "producers": [
+      {
+        "binding": "WEBHOOK_QUEUE",
+        "queue": "hooktalon-delivery"
+      }
+    ],
+    "consumers": [
+      {
+        "queue": "hooktalon-delivery",
+        "dead_letter_queue": "hooktalon-dead-letter",
+        "max_retries": 2,
+        "max_batch_size": 1,
+        "retry_delay": 10,
+        "max_batch_timeout": 30,
+        "max_concurrency": 10
+      }
+    ]
+  },
+  "vars": {
+    "SLACK_WEBHOOK_URL": "",
+    "ENCRYPTION_KEY": "",
+    "OUTGOING_SIGNING_KEY": "",
+    "SENDGRID_API_KEY": "",
+    "ALERT_EMAIL_TO": "",
+    "ALERT_EMAIL_FROM": "",
+    "WEBHOOK_TIMEOUT_MS": "",
+    "MAX_PAYLOAD_SIZE": "",
+    "EVENT_RETENTION_DAYS": "",
+    "API_KEY": ""
+  }
+}
